@@ -1,0 +1,65 @@
+history = []
+while True:
+    print("===== TRADING BOT =====")
+    print("1. Analyze Stock")
+    print("2. View History")
+    print("3. Exit")
+    print()
+    page = int(input('Page Number: '))
+    print()
+    if page == 1:
+        print()
+        stock_name = input('Stock Name: ')
+        price = float(input('Price: '))
+        ratio = float(input('P/E Ratio: '))
+        print()
+        if price < 100 and ratio < 20:
+            decision = 'BUY'
+        elif 100 <= price <= 200:
+            decision = 'HOLD'
+        elif price > 200 or ratio > 40:
+            decision = 'SELL'
+        else:
+            decision = 'NO CLEAR SIGNAL'
+        print(f'Good Decision: {decision}')
+        print()
+        if ratio < 20:
+            pe_analysis = 'Undervalued'
+        elif ratio <= 40:
+            pe_analysis = 'Fair'
+        else:
+            pe_analysis = 'Overvalued'
+        print(f"P/E Analysis: {pe_analysis}")
+        print()
+        buy = float(input('Buy Price: '))
+        sell = float(input('Sell Price: '))
+        profit = sell - buy
+        print(f'Profit : {profit}')
+        if profit > 1000:
+            print('GOOD TRADE')
+        else:
+            print('BAD TRADE')
+        print()
+        trade = {
+            'stock': stock_name,
+            'price': price,
+            'pe': ratio,
+            'decision': decision,
+            'profit': profit}
+        history.append(trade)
+        file = open('trading bot 3.txt' , 'a')
+        file.write(f'Stock name: {stock_name} | Price: {price} | P/E ratio: {ratio} | Decision: {decision} | Profit: {profit} \n------------------------\n')
+        file.close()
+    elif page == 2:
+        if len(history) == 0:
+            print('No Trade Available')
+        else:
+            print("===== TRADE HISTORY =====")
+            for trade in history:
+                print(f"Stock: {trade['stock']} | Price: {trade['price']} | P/E Ratio: {trade['pe']} | Decision: {trade['decision']} | Profit: {trade['profit']}")
+    elif page == 3:
+        print()
+        print('Exiting System...')
+        break
+    else:
+        print('INVALID CHOICE!!')
