@@ -1,0 +1,28 @@
+stock_name = input('Stock Name: ')
+price = float(input('Price: '))
+ratio = float(input('P/E Ratio: '))
+print()
+if price < 100 and ratio < 20:
+    print('Good Decision: BUY')
+elif 100 <= price <= 200:
+    print('Good Decision: HOLD')
+elif price > 200 or ratio > 40:
+    print('Good Decision: SELL')
+else:
+    print('NO CLEAR SIGNAL')
+print()
+if ratio < 20:
+    pe_analysis = 'Undervalued'
+elif ratio <= 40:
+    pe_analysis = 'Fair'
+else:
+    pe_analysis = 'Overvalued'
+print()
+buy = float(input('Buy Price: '))
+sell = float(input('Sell Price: '))
+profit = sell - buy
+print(f'Profit : {profit}')
+if profit > 1000:
+    print('GOOD TRADE')
+else:
+    print('BAD TRADE')
