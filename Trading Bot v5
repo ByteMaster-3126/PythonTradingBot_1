@@ -1,0 +1,120 @@
+history = []
+while True:
+    print("===== TRADING BOT =====")
+    print("1. Analyze Stock")
+    print("2. View History")
+    print("3. Analytics")
+    print("4. Exit")
+    print()
+    page = int(input('Page Number: '))
+    print()
+    if page == 1:
+        print()
+        stock_name = input('Stock Name: ')
+        price = float(input('Price: '))
+        roe = float(input('ROE: '))
+        ratio = float(input('P/E Ratio: '))
+        print()
+        if price > 1000:
+            print("Expensive Stock ⚠️")
+        else:
+            print("Affordable 💰")
+        score = 0
+        if ratio < 25:
+            score += 1
+        if roe > 15:
+            score += 1
+        if price < 500:
+            score += 1
+        if score == 3:
+            decision = 'BUY'
+        elif score == 2:
+            decision = 'HOLD'
+        elif score <= 1:
+            decision = 'SELL'
+        else:
+            decision = 'NO CLEAR SIGNAL'
+        if decision == 'BUY':
+            print('Strong Buy Opportunity 🚀')
+        elif decision == 'SELL':
+            print("High Risk ❌")
+        elif decision == 'HOLD':
+            print("HOLD Opportunity ⚠️")
+        print()
+        if ratio < 20:
+            pe_analysis = 'Undervalued'
+        elif ratio <= 40:
+            pe_analysis = 'Fair'
+        else:
+            pe_analysis = 'Overvalued'
+        print(f"P/E Analysis: {pe_analysis}")
+        print()
+        buy = float(input('Buy Price: '))
+        sell = float(input('Sell Price: '))
+        profit = sell - buy
+        if profit > 0:
+            print(f'Profit: {profit}')
+        else:
+            print(f'Loss: {profit}')
+        if profit > 1000:
+            print('GOOD TRADE')
+        elif profit == 0:
+            print('No Profit No Loss ⚖️')
+        else:
+            print('BAD TRADE')
+        print()
+        trade = {
+            'stock': stock_name,
+            'price': price,
+            'pe': ratio,
+            'roe': roe,
+            'decision': decision,
+            'profit': profit}
+        history.append(trade)
+        file = open('trading bot 3.txt' , 'a')
+        file.write(f'Stock name: {stock_name} | Price: {price} | ROE: {roe} | P/E ratio: {ratio} | Decision: {decision} | Profit: {profit} \n------------------------\n')
+        file.close()
+    elif page == 2:
+        if len(history) == 0:
+            print('No Trade Available')
+        else:
+            print("===== TRADE HISTORY =====")
+            for trade in history:
+                print(f"Stock: {trade['stock']} | Price: {trade['price']} | P/E Ratio: {trade['pe']} | Decision: {trade['decision']} | Profit: {trade['profit']}")
+    elif page == 3:
+        if len(history) == 0:
+            print('Analytics Data Not Found')
+        else:
+            print()
+            print('===== ANALYTICS =====')
+            print()
+            print(f'Total Trades: {len(history)}')
+            total_profit = 0
+            best_trade = history[0]
+            worst_trade = history[0]
+            profit_count = 0
+            loss_count = 0
+            for trade in history:
+                if trade['profit'] > 0:
+                    profit_count += 1
+                else:
+                    loss_count += 1
+                total_profit += trade['profit']
+                if trade['profit'] > best_trade['profit']:
+                    best_trade = trade
+                if trade['profit'] < worst_trade['profit']:
+                    worst_trade = trade
+            win_rate = (profit_count / len(history)) * 100
+            print(f'Total Profit: {total_profit}')
+            print(f'Average Profit: {total_profit / len(history)}')
+            print(f'Profit Count: {profit_count}')
+            print(f'Loss Count: {loss_count}')
+            print(f'Win Rate: {win_rate:.2f}%')
+            print(f"Best Trade → Stock: {best_trade['stock']} | Profit: {best_trade['profit']}")
+            print(f"Worst Trade → Stock: {worst_trade['stock']} | Profit: {worst_trade['profit']}")
+    elif page == 4:
+        print()
+        print('Exiting System...')
+        break
+    else:
+        print('INVALID CHOICE!!')
