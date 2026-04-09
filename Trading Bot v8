@@ -1,0 +1,169 @@
+history = []
+balance = 10000
+while True:
+    print("===== TRADING BOT =====")
+    print("1. Analyze Stock")
+    print("2. View History")
+    print("3. Analytics")
+    print("4. Exit")
+    print()
+    page = int(input('Page Number: '))
+    print()
+    if page == 1:
+        print()
+        stock_name = input('Stock Name: ')
+        price = float(input('Price: '))
+        roe = float(input('ROE: '))
+        ratio = float(input('P/E Ratio: '))
+        print()
+        if price > 1000:
+            print("Expensive Stock ⚠️")
+        else:
+            print("Affordable 💰")
+        score = 0
+        if ratio < 25:
+            score += 1
+        if roe > 15:
+            score += 1
+        if price < 500:
+            score += 1
+        if score == 3:
+            decision = 'BUY'
+        elif score == 2:
+            decision = 'HOLD'
+        elif score <= 1:
+            decision = 'SELL'
+        else:
+            decision = 'NO CLEAR SIGNAL'
+        if decision == 'BUY':
+            print('Strong Buy Opportunity 🚀')
+        elif decision == 'SELL':
+            print("High Risk ❌")
+        elif decision == 'HOLD':
+            print("HOLD Opportunity ⚠️")
+        print()
+        if ratio < 20:
+            pe_analysis = 'Undervalued'
+        elif ratio <= 40:
+            pe_analysis = 'Fair'
+        else:
+            pe_analysis = 'Overvalued'
+        print(f"P/E Analysis: {pe_analysis}")
+        print()
+        confidence = (score / 3) * 100
+        print(f'🧠 Decision Confidence: {confidence:.2f}%')
+        investment = float(input('Investment: ₹'))
+        if investment > balance:
+            print('❌❌❌ERROR: Insufficient Balance ❌❌❌')
+            continue
+        risk_management = ((20 / 100) * balance)
+        if investment > risk_management:
+            print('Expensive Investment ⚠️ High Risk !')
+            choice = input("Do you still want to continue? (yes/no): ")
+            if choice.lower() != 'yes':
+                continue
+        buy = float(input('Buy Price: '))
+        sell = float(input('Sell Price: '))
+        stop_loss = float(input('Stop Loss Price: '))
+        target_price = float(input('Target Price: '))
+        change = ((sell - buy) / buy) * 100
+        print(f'Current Balance: ₹{balance:.2f}')
+        if balance < 5000:
+            print("⚠️ Account Risk Low Balance")
+        if sell <= stop_loss:
+            print('Stop Loss Hit ❌')
+        elif sell >= target_price:
+            print('Target Achieved 🎯')
+        else:
+            print('Normal Exit...')
+        profit = investment * (change / 100)
+        balance += profit
+        total_growth = balance - 10000
+        print(f'Total Growth: {total_growth}')
+        if profit > 0:
+            print(f'Profit: {profit:.2f}')
+        else:
+            print(f'Loss: {profit:.2f}')
+        if profit > 1000:
+            print('GOOD TRADE')
+        elif profit == 0:
+            print('No Profit No Loss ⚖️')
+        else:
+            print('BAD TRADE')
+        big_profit = (10 / 100) * investment
+        medium_profit = (5 / 100) * investment
+        small_profit = (2 / 100) * investment
+        if profit >= big_profit:
+            rating = 'Excellent 🌟'
+        elif profit >= medium_profit:
+            rating = 'Good 👍'
+        elif profit >= small_profit:
+            rating = 'Normal 🙂'
+        else:
+            rating = 'Bad ❌'
+        print(f'🏆 Trade Rating: {rating}')
+        print()
+        trade = {
+            'stock': stock_name,
+            'price': price,
+            'pe': ratio,
+            'roe': roe,
+            'decision': decision,
+            'stop_loss': stop_loss,
+            'target': target_price,
+            'change': change,
+            'profit': profit,
+            'balance': balance,
+            'investment': investment,
+            'confidence': confidence,
+            'rating': rating}
+        history.append(trade)
+        with open('trading bot 3.txt', 'a') as file:
+            file.write(
+                f'Stock name: {stock_name} | Price: {price} | ROE: {roe} | P/E ratio: {ratio} | Decision: {decision} | Stop Loss: {stop_loss} | Target: {target_price} | % Change: {change:.2f} | Profit: {profit:.2f} | Investment: {investment} | 🧠 Decision Confidence: {confidence:.2f}% | 🏆 Trade Rating: {rating}  | Total Balance: {balance:.2f} \n------------------------\n')
+    elif page == 2:
+        if len(history) == 0:
+            print('No Trade Available')
+        else:
+            print("===== TRADE HISTORY =====")
+            for trade in history:
+                print(f"Stock: {trade['stock']} | Price: {trade['price']} | P/E Ratio: {trade['pe']} | Decision: {trade['decision']} | Stop Loss: {trade['stop_loss']} | Target: {trade['target']} | % Change: {trade['change']:.2f} | Profit: {trade['profit']:.2f} | Investment: {trade['investment']} | 🧠 Decision Confidence: {trade['confidence']:.2f}% | 🏆 Trade Rating: {trade['rating']}  Total Balance: {trade['balance']:.2f}")
+    elif page == 3:
+        if len(history) == 0:
+            print('Analytics Data Not Found')
+        else:
+            print()
+            print('===== ANALYTICS =====')
+            print()
+            print(f'Total Trades: {len(history)}')
+            total_profit = 0
+            best_trade = history[0]
+            worst_trade = history[0]
+            profit_count = 0
+            loss_count = 0
+            for trade in history:
+                if trade['profit'] > 0:
+                    profit_count += 1
+                else:
+                    loss_count += 1
+                total_profit += trade['profit']
+                if trade['profit'] > best_trade['profit']:
+                    best_trade = trade
+                if trade['profit'] < worst_trade['profit']:
+                    worst_trade = trade
+            win_rate = (profit_count / len(history)) * 100
+            print(f'Total Profit: {total_profit}')
+            print(f'Average Profit: {total_profit / len(history)}')
+            print(f'Profit Count: {profit_count}')
+            print(f'Loss Count: {loss_count}')
+            print(f'Win Rate: {win_rate:.2f}%')
+            print(f'Final Balance: ₹{balance:.2f}')
+            print(f'Total Growth: ₹{balance - 10000:.2f}')
+            print(f"Best Trade → Stock: {best_trade['stock']} | Profit: {best_trade['profit']}")
+            print(f"Worst Trade → Stock: {worst_trade['stock']} | Profit: {worst_trade['profit']}")
+    elif page == 4:
+        print()
+        print('Exiting System...')
+        break
+    else:
+        print('INVALID CHOICE!!')
