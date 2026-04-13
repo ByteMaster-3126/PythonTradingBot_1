@@ -1,0 +1,338 @@
+history = []
+initial_balance = 10000
+balance = 10000
+win_streak = 0
+loss_streak = 0
+max_win_streak = 0
+max_loss_streak = 0
+while True:
+    print("===== TRADING BOT =====")
+    print("1. Analyze Stock")
+    print("2. View History")
+    print("3. Analytics")
+    print("4. Exit")
+    print()
+    page = int(input('Page Number: '))
+    print()
+    if page == 1:
+        print()
+        stock_name = input('Stock Name: ')
+        try:
+            price = float(input('Price: '))
+        except:
+            print('Invalid Input !')
+            continue
+        roe = float(input('ROE: '))
+        ratio = float(input('P/E Ratio: '))
+        trend = input('Trend: ')
+        risk = input("Risk Level (low/medium/high): ")
+        print()
+        if price > 1000:
+            print("Expensive Stock ⚠️")
+        else:
+            print("Affordable 💰")
+        score = 0
+        if ratio < 20:
+            score += 1
+        else:
+            score -= 1
+        if roe > 15:
+            score += 1
+        else:
+            score -= 1
+        if price < 500:
+            score += 1
+        if trend.lower() == 'up':
+            score += 1
+        else:
+            score -= 1
+        if risk.lower() == 'low':
+            if score >= 4:
+                decision = 'STRONG BUY'
+            elif score == 3:
+                decision = 'BUY'
+            elif score == 2:
+                decision = 'HOLD'
+            else:
+                decision = 'AVOID'
+        elif risk.lower() == 'medium':
+            if score >= 3:
+                decision = 'STRONG BUY'
+            elif score == 2:
+                decision = 'BUY'
+            elif score == 1:
+                decision = 'HOLD'
+            else:
+                decision = 'AVOID'
+        elif risk.lower() == 'high':
+            if score >= 2:
+                decision = 'STRONG BUY'
+            elif score == 1:
+                decision = 'BUY'
+            elif score == 0:
+                decision = 'HOLD'
+            else:
+                decision = 'AVOID'
+        else:
+            print('Invalid Choice !')
+            decision = None
+        if decision == None:
+            continue
+        if ratio < 20:
+            pe_analysis = 'Undervalued'
+        elif ratio <= 40:
+            pe_analysis = 'Fair'
+        else:
+            pe_analysis = 'Overvalued'
+        print(f"P/E Analysis: {pe_analysis}")
+        print()
+        buy = float(input('Buy Price: '))
+        sell = float(input('Sell Price: '))
+        target_price = float(input('Target Price: '))
+        change = ((sell - buy) / buy) * 100
+        print(f'Current Balance: ₹{balance:.2f}')
+        if balance < 3000:
+            print("⚠️ Account Risk Low Balance")
+            print('Trading Blocked !')
+            continue
+        stop_loss = float(input('Stop Loss Price: '))
+        if sell <= stop_loss:
+            print('Stop Loss Hit ❌')
+        elif sell >= target_price:
+            print('Target Achieved 🎯')
+        else:
+            print('Normal Exit...')
+        confidence = ((score + 3) / 6) * 100
+        print(f"🤖 Strategy: Investing based on {confidence:.2f}% confidence")
+        growth_percent = ((balance - initial_balance) / initial_balance) * 100
+        if growth_percent > 20:
+            risk_percent = 3
+            risk_mode = 'AGGRESSIVE 🚀'
+        elif growth_percent < 0:
+            risk_percent = 1
+            risk_mode = 'DEFENSIVE 🛡️'
+        else:
+            risk_percent = 2
+            risk_mode = 'BALANCED ⚖️'
+        if risk_mode == "DEFENSIVE 🛡️":
+            print("⚠️ System protecting capital...")
+        elif risk_mode == "AGGRESSIVE 🚀":
+            print("🔥 High growth mode activated!")
+        risk_amount = balance * (risk_percent / 100)
+        risk_per_share = abs(price - stop_loss)
+        if risk_per_share == 0:
+            print('Shares Does Not Exists !')
+            continue
+        else:
+            shares = int(risk_amount / risk_per_share)
+            if shares == 0:
+                print("Trade too risky for your capital ❌")
+                continue
+            total_investment = shares * price
+        investment = total_investment
+        print(f"🤖 Auto Investment: ₹{investment:.2f}")
+        if total_investment > balance:
+            print("❌❌❌ERROR: Insufficient Balance ❌❌❌")
+            continue
+        profit = 0
+        loss = 0
+        print()
+        if loss_streak >= 5:
+            print("🚫 Trading Paused (Too Many Losses)")
+            continue
+        print(f"🤖 Final Investment: ₹{investment:.2f}")
+        total_growth = balance - 10000
+        print(f'Total Growth: {total_growth}')
+        total_strong_buy = 0
+        profit_strong_buy = 0
+        total_buy = 0
+        profit_buy = 0
+        total_hold = 0
+        profit_hold = 0
+        total_avoid = 0
+        profit_avoid = 0
+        for t in history:
+            if t['decision'] == 'STRONG BUY':
+                total_strong_buy += 1
+                if t['profit'] > 0:
+                    profit_strong_buy += 1
+            elif t['decision'] == 'BUY':
+                total_buy += 1
+                if t['profit'] > 0:
+                    profit_buy += 1
+            elif t['decision'] == 'AVOID':
+                total_avoid += 1
+                if t['profit'] > 0:
+                    profit_avoid += 1
+            elif t['decision'] == 'HOLD':
+                total_hold += 1
+                if t['profit'] > 0:
+                    profit_hold += 1
+        if decision == 'STRONG BUY' and total_strong_buy > 0:
+            success_rate = (profit_strong_buy / total_strong_buy) * 100
+            if  success_rate < 50:
+                decision = 'BUY'
+            else:
+                print('Strong Buy Opportunity 🚀🚀')
+            profit = (sell - buy) / buy * investment
+        if decision == 'BUY' and total_buy > 0:
+            success_rate = (profit_buy / total_buy) * 100
+            if  success_rate > 70:
+                decision = 'STRONG BUY'
+            else:
+                print('Buy Opportunity 🚀')
+            profit = (sell - buy) / buy * investment
+        if decision == 'AVOID' and total_avoid > 0:
+            success_rate = (profit_avoid / total_avoid) * 100
+            if success_rate < 40:
+                decision = 'BUY'
+            else:
+                print("🚫 Trade Skipped (Bad Opportunity)")
+                print("High Risk ❌")
+            profit = -abs((sell - buy) / buy * investment)
+        if decision == 'HOLD' and total_hold > 0:
+            success_rate = (profit_hold / total_hold) * 100
+            if success_rate > 60:
+                print("Strong HOLD Confidence ⚠️")
+            else:
+                print("HOLD Opportunity ⚠️")
+            profit = 0
+        balance += profit
+        if profit > 0:
+            print(f'Profit: {profit:.2f}')
+            win_streak += 1
+            loss_streak = 0
+            if win_streak > max_win_streak:
+                max_win_streak = win_streak
+        elif profit < 0:
+            print(f'Loss: {-profit:.2f}')
+            win_streak = 0
+            loss_streak += 1
+            if loss_streak > max_loss_streak:
+                max_loss_streak = loss_streak
+        if profit > 1000:
+            print('GOOD TRADE')
+        elif profit == 0:
+            print('No Profit No Loss ⚖️')
+        else:
+            print('BAD TRADE')
+        big_profit = 0.10 * investment
+        medium_profit = 0.05 * investment
+        small_profit = 0.02 * investment
+        if profit >= big_profit:
+            rating = 'Excellent 🌟'
+        elif profit >= medium_profit:
+            rating = 'Good 👍'
+        elif profit >= small_profit:
+            rating = 'Normal 🙂'
+        else:
+            rating = 'Bad ❌'
+        print(f'🏆 Trade Rating: {rating}')
+        print('===== RISK MANAGEMENT =====')
+        print(f'Max Risk: ₹{risk_amount}')
+        print(f'Risk per Share: ₹{risk_per_share}')
+        print(f'Shares to Buy: {shares}')
+        print(f'Total Investment: ₹{total_investment}')
+        print('===== CAPITAL STATUS =====')
+        print(f'Initial Balance: ₹{initial_balance}')
+        print(f'Current Balance: ₹{balance}')
+        print(f'Growth: {growth_percent:.2f}%')
+        print(f'Risk Percent: {risk_percent:.2f}%')
+        print(f"Risk Mode: {risk_mode}")
+        trade = {
+            'stock': stock_name,
+            'price': price,
+            'pe': ratio,
+            'roe': roe,
+            'decision': decision,
+            'stop_loss': stop_loss,
+            'max_risk': risk_amount,
+            'risk_per_share': risk_per_share,
+            'shares_to_buy': shares,
+            'total_investment': total_investment,
+            'target': target_price,
+            'change': change,
+            'profit': profit,
+            'loss': loss,
+            'balance': balance,
+            'investment': investment,
+            'confidence': confidence,
+            'rating': rating
+        }
+        history.append(trade)
+        with open('trading_bot_15.txt', 'a') as file:
+            file.write(
+                f'Stock name: {stock_name} | Price: {price} | ROE: {roe} | P/E ratio: {ratio} | Decision: {decision} | Stop Loss: {stop_loss} | Max Risk: ₹{risk_amount} | Risk per Share: ₹{risk_per_share}  | Shares to Buy: {shares} | Total Investment: ₹{total_investment} | Target: {target_price} | % Change: {change:.2f} | Profit: {profit:.2f} | Loss: {loss:.2f} | Investment: {investment:.2f} | Confidence: {confidence:.2f}% | Rating: {rating} | Balance: {balance:.2f} | Max win streak: {max_win_streak}\n------------------------\n'
+            )
+    elif page == 2:
+        if len(history) == 0:
+            print('No Trade Available')
+        else:
+            print("===== TRADE HISTORY =====")
+            for trade in history:
+                print(f"Stock: {trade['stock']} | Price: {trade['price']} | P/E Ratio: {trade['pe']} | Decision: {trade['decision']} | Max Risk: ₹{trade['max_risk']} | Risk per Share: ₹{trade['risk_per_share']}  | Shares to Buy: {trade['shares_to_buy']} | Total Investment: ₹{trade['total_investment']}| Profit: {trade['profit']:.2f} | Loss: {trade['loss']:.2f} | Investment: {trade['investment']:.2f} | Balance: {trade['balance']:.2f}")
+    elif page == 3:
+        if len(history) == 0:
+            print('Analytics Data Not Found')
+        else:
+            print()
+            print('===== ANALYTICS =====')
+            print()
+            total_profit = 0
+            total_loss = 0
+            best_trade = history[0]
+            worst_trade = history[0]
+            profit_count = 0
+            loss_count = 0
+            for trade in history:
+                if trade['profit'] > 0:
+                    profit_count += 1
+                else:
+                    loss_count += 1
+            win_rate = (profit_count / len(history)) * 100
+            for trade in history:
+                if trade['profit'] > 0:
+                    total_profit += trade['profit']
+                if trade['profit'] < 0:
+                    total_loss += trade['loss']
+                if trade['profit'] > best_trade['profit']:
+                    best_trade = trade
+                if trade['profit'] < worst_trade['profit']:
+                    worst_trade = trade
+            print(f'Total Trades: {len(history)}')
+            print(f'Total Profit: {total_profit}')
+            print(f'Total Loss: {total_loss}')
+            print(f'Average Profit: {total_profit / len(history)}')
+            print(f'Profit Count: {profit_count}')
+            print(f'Loss Count: {loss_count}')
+            print(f'Win Rate: {win_rate:.2f}%')
+            print(f'Final Balance: ₹{balance:.2f}')
+            print(f'Total Growth: ₹{balance - 10000:.2f}')
+            print(f"Best Trade → Stock: {best_trade['stock']} | Profit: {best_trade['profit']}")
+            print(f"Worst Trade → Stock: {worst_trade['stock']} | Profit: {worst_trade['profit']}")
+            print(f"🔥 Current Win Streak: {win_streak}")
+            print(f"⚡ Current Loss Streak: {loss_streak}")
+            print(f"🏆 Max Win Streak: {max_win_streak}")
+            print(f"⚠️ Max Loss Streak: {max_loss_streak}")
+            decision_count = {
+                'STRONG BUY': 0,
+                'BUY': 0,
+                'AVOID': 0,
+                'HOLD': 0
+            }
+            for trade in history:
+                if trade['decision'] in decision_count:
+                    decision_count[trade['decision']] += 1
+            print(f"STRONG Buy Count: {decision_count['STRONG BUY']}")
+            print(f"Buy Count: {decision_count['BUY']}")
+            print(f"Hold Count: {decision_count['HOLD']}")
+            print(f"Avoid Count: {decision_count['AVOID']}")
+            most_freq = max(decision_count, key=decision_count.get)
+            print(f"Most Frequent Decision: {most_freq}")
+            print(f"Count: {decision_count[most_freq]}")
+    elif page == 4:
+        print()
+        print('Exiting System...')
+        break
+    else:
+        print('INVALID CHOICE!!')
